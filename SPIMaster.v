@@ -5,7 +5,7 @@ module SPIMaster(		input clk,
 							input [5:0] address,
 							input [7:0] value,
 							output reg [55:0] buffer,
-							output ready,
+							output o_sync,
 							
 							output MOSI,
 							input MISO,
@@ -55,7 +55,7 @@ module SPIMaster(		input clk,
 			bufferNext = buffer;
 			case(state)
 				IDLE: begin
-				countNext = 6'd0;
+					countNext = 6'd0;
 					if(enable) begin
 						tCountNext = 5'd0;
 						bufferNext = 56'd1;
@@ -80,6 +80,7 @@ module SPIMaster(		input clk,
 					if(negedgeSCLK) tCountNext = tCount + 5'd1;
 				end
 				FINISHED: begin
+					countNext = 6'd0;
 					if(!enable) nextState = IDLE;
 				end
 			endcase
@@ -92,7 +93,7 @@ module SPIMaster(		input clk,
 		end
 		
 		//assign ready = rw ? dataReady : writeComplete;
-		assign ready = state == FINISHED;
+		assign o_sync = state == FINISHED;
 		assign MOSI = data[15];
 
 endmodule 
