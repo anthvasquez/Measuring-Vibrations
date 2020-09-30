@@ -51,7 +51,7 @@ set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH tb_MeasuringVibrations -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH tb_FFT -section_id eda_simulation
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
@@ -97,17 +97,20 @@ set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_MeasuringVibrations -s
 set_global_assignment -name EDA_TEST_BENCH_NAME tb_LED_Debug -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_LED_Debug
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_LED_Debug -section_id tb_LED_Debug
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_MeasuringVibrations.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE Accel_driver.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE AccelDriver.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE LED_Debug.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE SPIRegWritetb.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE SPIRegWrite.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE SPIRegRead.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE SPIMaster.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE MeasuringVibrations.v -section_id tb_MeasuringVibrations
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_LED_Debug.v -section_id tb_LED_Debug
-set_global_assignment -name EDA_TEST_BENCH_FILE LED_Debug.v -section_id tb_LED_Debug
+set_global_assignment -name EDA_TEST_BENCH_NAME tb_FFT -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_FFT
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_FFT -section_id tb_FFT
+set_global_assignment -name EDA_TEST_BENCH_NAME ddstoptb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ddstoptb -section_id ddstoptb
+set_global_assignment -name TEXT_FILE cordicdds/vector.txt
+set_global_assignment -name VERILOG_FILE cordicdds/encoder.v
+set_global_assignment -name VERILOG_FILE cordicdds/ddstoptb.v
+set_global_assignment -name VERILOG_FILE cordicdds/ddstop.v
+set_global_assignment -name VERILOG_FILE cordicdds/cordicconst.v
+set_global_assignment -name VERILOG_FILE cordicdds/cordic.v
+set_global_assignment -name SOURCE_FILE cordicdds/constants.h
+set_global_assignment -name VERILOG_FILE cordicdds/accum.v
 set_global_assignment -name VERILOG_FILE "fft-core/shiftaddmpy.v"
 set_global_assignment -name VERILOG_FILE "fft-core/qtrstage.v"
 set_global_assignment -name VERILOG_FILE "fft-core/longbimpy.v"
@@ -130,4 +133,28 @@ set_global_assignment -name SDC_FILE MeasuringVibrations.sdc
 set_global_assignment -name VERILOG_FILE LED_Debug.v
 set_global_assignment -name VERILOG_FILE tb_MeasuringVibrations.v
 set_global_assignment -name VERILOG_FILE tb_LED_Debug.v
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_MeasuringVibrations.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE Accel_driver.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE AccelDriver.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE LED_Debug.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE SPIRegWritetb.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE SPIRegWrite.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE SPIRegRead.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE SPIMaster.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE MeasuringVibrations.v -section_id tb_MeasuringVibrations
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_LED_Debug.v -section_id tb_LED_Debug
+set_global_assignment -name EDA_TEST_BENCH_FILE LED_Debug.v -section_id tb_LED_Debug
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_FFT.v -section_id tb_FFT
+set_global_assignment -name EDA_TEST_BENCH_FILE "fft-core/fftmain.v" -section_id tb_FFT
+set_global_assignment -name EDA_TEST_BENCH_FILE "fft-core/cmem_16.hex" -section_id tb_FFT
+set_global_assignment -name EDA_TEST_BENCH_FILE "fft-core/cmem_8.hex" -section_id tb_FFT
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/accum.v -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/compile.ps1 -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/constants.h -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/cordic.v -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/cordicconst.v -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/ddstop.v -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/ddstoptb.v -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/encoder.v -section_id ddstoptb
+set_global_assignment -name EDA_TEST_BENCH_FILE cordicdds/vector.txt -section_id ddstoptb
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
