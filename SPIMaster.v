@@ -87,9 +87,9 @@ module SPIMaster(		input clk,
 		end
 		
 		always @(*) begin
-			dataNext = tCount == 5'd0 ? {rw_ms, address, value} : 
-							negedgeSCLK ? data << 1 : 
-												data;
+			dataNext =	tCount == 5'd0	?	{rw_ms, address, value} : 
+							negedgeSCLK		?	data << 1 : 
+													data;
 		end
 		
 		//assign ready = rw ? dataReady : writeComplete;
