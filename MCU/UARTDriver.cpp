@@ -16,12 +16,12 @@ UARTDriver::~UARTDriver()
 	serialClose(serialFd);
 }
 
-UARTDriver::UARTCallback(char** data)
+void UARTDriver::UARTCallback(char** data)
 {
 
 }
 
-UARTDriver::ReadLoop_Thread()
+void UARTDriver::ReadLoop()
 {
 	char* message = "1234";
 	write(serialFd, message, strlen(message));

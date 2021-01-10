@@ -1,15 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 project(MeasuringVibrations CXX)
 
-#set(CMAKE_PREFIX_PATH /Users/Anthony/Qt5.13.1/5.13.1/clang_64)
-# add source for any additional non-gui modules here
-set(LIB_SOURCE )
+# additional non-gui modules
+set(LIB_SOURCE UARTDriver.hpp UARTDriver.cpp)
 
 # add source for any additional gui modules here
 set(UI_SOURCE QTGUI.hpp QTGUI.cpp)
 
 # add source for simmips program here
-set(MV_SOURCE MeasuringVibrations.cpp uart.c)
+set(MV_SOURCE MeasuringVibrations.cpp)
 
 # You should not need to edit below this line
 #-----------------------------------------------------------------------

@@ -17,6 +17,13 @@
 class UARTDriver {
 	private:
 		int serial_fd;
+
+		void ReadLoop();
+		void UARTCallback(char** data);
+
+	public:
+		UARTDriver();
+		~UARTDriver();
 }
 
 #endif
