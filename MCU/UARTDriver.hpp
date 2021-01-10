@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <string>
+
 #include <wiringSerial.h>
 
 class UARTDriver {
@@ -24,6 +26,6 @@ class UARTDriver {
 	public:
 		UARTDriver();
 		~UARTDriver();
-}
+};
 
 #endif

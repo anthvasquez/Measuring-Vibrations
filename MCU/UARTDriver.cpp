@@ -1,9 +1,10 @@
+#include "UARTDriver.hpp"
 
 UARTDriver::UARTDriver()
 {
 	serial_fd = serialOpen("/dev/serial0", 9600);
 	//int serialFd = open("/dev/serial0", O_RDWR);
-	if(serialFd == -1)
+	if(serial_fd == -1)
 	{
 		printf("Couldn't open file.\n");
 	}
@@ -13,7 +14,7 @@ UARTDriver::UARTDriver()
 
 UARTDriver::~UARTDriver()
 {
-	serialClose(serialFd);
+	serialClose(serial_fd);
 }
 
 void UARTDriver::UARTCallback(char** data)
@@ -23,19 +24,16 @@ void UARTDriver::UARTCallback(char** data)
 
 void UARTDriver::ReadLoop()
 {
-	char* message = "1234";
-	write(serialFd, message, strlen(message));
+	std::string message = "1234";
+	write(serial_fd, message.c_str(), message.length());
 
 	int delay_milli = 500;
 	clock_t start_time = clock();
 	while(clock() < start_time + delay_milli);
 
-	char* recvBuf = calloc(strlen(message), sizeof(char));
-	read(serialFd, recvBuf, strlen(message));
+	char* recvBuf = (char*)calloc(message.length(), sizeof(char));
+	read(serial_fd, recvBuf, message.length());
 
 	printf("Received: %s\n", recvBuf);
 	UARTDriver::UARTCallback(&recvBuf);
-
-	close(serialFd);
-
 }
