@@ -6,7 +6,7 @@
 #**************************************************************
 # Create Clock
 #**************************************************************
-create_clock -period 83.333ns [get_ports sys_clock]
+create_clock -name CLK12M -period 83.333ns [get_ports sys_clock]
 
 # for enhancing USB BlasterII to be reliable, 25MHz
 #create_clock -name {altera_reserved_tck} -period 40 {altera_reserved_tck}
@@ -55,7 +55,8 @@ derive_clock_uncertainty
 #**************************************************************
 # Set False Path
 #**************************************************************
-
+set_false_path -from [get_ports {KEY}]
+set_false_path -from * -to [get_ports {LEDR*}]
 
 
 #**************************************************************
