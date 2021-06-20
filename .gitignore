@@ -1,6 +1,6 @@
 .DS_Store
-*/
+FPGA/*/
 *.bak
 *.rpt
-!fft-core/
-!uart/
+!FPGA/fft-core/
+!FPGA/uart/
