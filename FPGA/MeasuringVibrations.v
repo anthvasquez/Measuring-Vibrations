@@ -1,18 +1,18 @@
 module MeasuringVibrations(
-	input 		          		sys_clock,
-	input 		     				KEY,
+	input 		        sys_clock,
+	input 		     	KEY,
 	
-	output							MOSI,
-	input								MISO,
-	output							SCL,
-	output							CS,
-	input								INT1,
-	input								INT2,
+	output				MOSI,
+	input				MISO,
+	output				SCL,
+	output				CS,
+	input				INT1,
+	input				INT2,
 	
-	input								UART_RX,
-	output							UART_TX,
+	input				UART_RX,
+	output				UART_TX,
 	
-	output		     [7:0]		LEDR
+	output	[7:0]		LEDR
 );
 
 	wire reset;
@@ -45,7 +45,12 @@ module MeasuringVibrations(
 	fftmain FFT(sys_clock, reset, posedge_accel_osync, {accel_data, 8'd0}, FFT_data, FFT_osync);
 	
 	//Trigger write any time a new sample is given&taken from the FFT
-	UARTDriver UDriver(sys_clock, reset, UART_TX, posedge_accel_osync, FFT_osync, UART_data);
+	UARTDriver UDriver(	.sys_clock(sys_clock),
+						.reset(reset),
+						.UART_TX(UART_TX),
+						.UART_send(posedge_accel_osync),
+						.new_frame(FFT_osync),
+						.i_data(UART_data));
 
 endmodule
 
