@@ -1,25 +1,13 @@
 module UARTDriver(	input sys_clock,
-							input reset,
-							input UART_TX,
-							input UART_send,
-							input new_frame,
-							input [21:0] i_data);
+					input reset,
+					input UART_TX,
+					input UART_send,
+					input new_frame,
+					input [21:0] i_data);
 	
 	reg fifo_write_en, fifo_write_en_next;
 	reg [7:0] fifo_data, fifo_data_next;
 	wire fifo_isFull;
-	
-	
-	
-	/*FIFO fifo(sys_clock, reset,
-					input write_en,	//performs one r/w action per posedge if pulse_mode is high
-					input pulse_mode,
-					input di,
-					input read_en,
-					output isEmpty,
-					output isFull,
-					output o_ready,
-					output reg d_out);*/
 					
 	
 //	State						new_frame	UART_send				next_state				output	
@@ -32,6 +20,11 @@ module UARTDriver(	input sys_clock,
 //	Queue bin_end				X				X					Idle					FIFO add bin_end	
 
 //Send 7 bits of data each UART message, the MSB is reserved for determining if it's a control signal or a data signal
+	
+	reg old_UART_send;
+	wire posedge_UART_send;
+	always @(posedge sys_clock) old_UART_send <= reset ? 1'b0 : UART_send;
+	assign posedge_UART_send = (UART_send ^ old_UART_send) & UART_send;
 	
 	//FIFO control signals (D for data)
 	localparam D_FRAME_END = 8'h80, D_FRAME_START = 8'h81, D_BIN_START = 8'h82, D_BIN_END = 8'h83, D_FIFO_FULL = 8'h84;	//all control signals have the form 8'b1xxx_xxxx
@@ -56,16 +49,18 @@ module UARTDriver(	input sys_clock,
 		case(state)
 			IDLE: begin
 				fifo_write_en_next = 1'b0;
-				if(UART_send) begin
+				if(posedge_UART_send) begin
 					if(new_frame)	state_next = FRAME_END;
 					else			state_next = BIN_START;
 				end
 			end
 			FRAME_END:		state_next = FRAME_START;
 			FRAME_START:	state_next = BIN_START;
-			BIN_START:		state_next = DATA;
+			BIN_START:		state_next = BIN_END;//DATA;
 			BIN_END:		state_next = IDLE;
 			DATA: begin
+			//TODO: send data to UART module when new fifo data is read and UART is not busy
+			//Note: if(!o_busy) => raise txuart write, shift byte on posedge of o_busy;
 				//TODO: implement what is described above
 			end
 			FIFO_FULL: begin
@@ -86,7 +81,7 @@ module UARTDriver(	input sys_clock,
 	
 	wire [7:0]	fifo_data_read;
 	wire		fifo_read_en, fifo_isEmpty;
-	reg			UART_wr, UART_wr_next;
+	wire		UART_wr;
 	wire		UART_o_busy;
 	
 	txuart UART(.i_clk(sys_clock),
@@ -95,7 +90,7 @@ module UARTDriver(	input sys_clock,
 				.i_break(1'b0),
 				.i_wr(UART_wr),
 				.i_data(fifo_data_read),
-				.i_cts_n(1'b1),
+				.i_cts_n(1'b0),
 				.o_uart_tx(UART_TX),
 				.o_busy(UART_o_busy));
 					
@@ -108,17 +103,8 @@ module UARTDriver(	input sys_clock,
 				.isEmpty(fifo_isEmpty),
 				.isFull(fifo_isFull),
 				.d_out(fifo_data_read));
-				
-				
 	
-	//combinational logic - READING
-	always @(*) begin
-		if(~fifo_isEmpty & ~UART_o_busy) begin
-			//TODO: send data to UART module when new fifo data is read and UART is not busy
-			//Note: if(!o_busy) => raise txuart write, shift byte on posedge of o_busy;
-		end
-	end
-	
-	assign fifo_read_en = UART_o_busy;
+	assign UART_wr = ~fifo_isEmpty;
+	assign fifo_read_en = UART_wr & ~UART_o_busy;
 
 endmodule 

@@ -27,7 +27,7 @@ module FIFO(		input				sys_clock,
 	always @(posedge sys_clock) begin
 		read_addr <= reset ? 4'd0 : read_addr_next;
 		write_addr <= reset ? 4'd0 : write_addr_next;
-		d_out <= read_en ? d_out_next : d_out;	//d_out line holds last read value until next read request
+		d_out <= reset ? 8'd0 : read_en ? d_out_next : d_out;	//d_out line holds last read value until next read request
 	end
 	
 	//---------------------writing-------------------------------

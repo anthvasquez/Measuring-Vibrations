@@ -9,12 +9,12 @@ module AccelDriver(
 							input		reset,
 							input		driver_enable,
 							
-							output	MOSI,
+							output		MOSI,
 							input		MISO,
-							output	SCL,
-							output	CS,
+							output		SCL,
+							output		CS,
 							
-							output	o_sync,
+							output		o_sync,
 							output	signed	[7:0]	data
 							);
 							
