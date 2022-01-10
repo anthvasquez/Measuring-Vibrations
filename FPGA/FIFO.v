@@ -52,10 +52,6 @@ module FIFO(	input				sys_clock,
 				write_addr_next = write_en ? write_addr + 4'd1 : write_addr;
 			end
 		end
-		
-		/*if((~isFull) & ((~pulse_mode & write_en) | (pulse_mode & negedge_write_en))) begin
-			write_addr_next = write_addr + 4'd1;
-		end*/
 	end
 	
 	
@@ -72,8 +68,11 @@ module FIFO(	input				sys_clock,
 			read_addr_next = read_addr + 4'd1;
 		end
 	end
-					
+	
+	wire [3:0] write_addr_plusone;
+	assign write_addr_plusone = write_addr + 4'd1;	//used for isFull comparison
+	
 	assign isEmpty	=	read_addr == write_addr;
-	assign isFull	=	read_addr == (write_addr + 1);
+	assign isFull	=	read_addr == write_addr_plusone;
 
 endmodule 
