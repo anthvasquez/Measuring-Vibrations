@@ -11,13 +11,13 @@ module UARTDriver(	input sys_clock,
 					
 	
 //	State						new_frame	UART_send				next_state				output	
-//	Idle						1				1					Queue frame_end		
-//	Idle						0				1					Queue bin_start		
-//	Queue frame_end				X				X					Queue frame_start		FIFO add frame_end	
-//	Queue frame_start			X				X					Queue bin_start			FIFO add frame_start	
-//	Queue bin_start				X				X					Queue data				FIFO add bin_start	
-//	Queue data					X				X					Queue bin_end			FIFO add byte of data until data == 0
-//	Queue bin_end				X				X					Idle					FIFO add bin_end	
+//	Idle						1				1							Queue frame_end		
+//	Idle						0				1							Queue bin_start		
+//	Queue frame_end		X				X							Queue frame_start		FIFO add frame_end	
+//	Queue frame_start		X				X							Queue bin_start		FIFO add frame_start	
+//	Queue bin_start		X				X							Queue data				FIFO add bin_start	
+//	Queue data				X				X							Queue bin_end			FIFO add byte of data until data == 0
+//	Queue bin_end			X				X							Idle						FIFO add bin_end	
 
 //Send 7 bits of data each UART message, the MSB is reserved for determining if it's a control signal or a data signal
 	
@@ -57,7 +57,7 @@ module UARTDriver(	input sys_clock,
 			FRAME_END:		state_next = FRAME_START;
 			FRAME_START:	state_next = BIN_START;
 			BIN_START:		state_next = BIN_END;//DATA;
-			BIN_END:		state_next = IDLE;
+			BIN_END:			state_next = IDLE;
 			DATA: begin
 			//TODO: send data to UART module when new fifo data is read and UART is not busy
 			//Note: if(!o_busy) => raise txuart write, shift byte on posedge of o_busy;
@@ -81,7 +81,7 @@ module UARTDriver(	input sys_clock,
 	
 	wire [7:0]	fifo_data_read;
 	wire		fifo_read_en, fifo_isEmpty;
-	wire		UART_wr;
+	reg		UART_wr, UART_wr_next;
 	wire		UART_o_busy;
 	
 	txuart UART(.i_clk(sys_clock),
@@ -104,7 +104,12 @@ module UARTDriver(	input sys_clock,
 				.isFull(fifo_isFull),
 				.d_out(fifo_data_read));
 	
-	assign UART_wr = ~fifo_isEmpty;
+	//add one clock cycle of delay to allow the newly written FIFO data to propogate.
+	//Ackchyually, the FIFO should add this delay before driving isEmpty back to low or
+	//add some pass through for same cycle read/writes, but
+	//the code is much cleaner this way and you don't need that one clock cycle bro
+	always @(posedge sys_clock) UART_wr <= reset ? 1'b0 : UART_wr_next;
+	always @(*) UART_wr_next = ~fifo_isEmpty;
 	assign fifo_read_en = UART_wr & ~UART_o_busy;
 
 endmodule 

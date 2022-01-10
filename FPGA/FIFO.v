@@ -2,24 +2,29 @@
 USAGE:
 To write, set di to the data you want to add and pulse write_en.
 To read the next piece of data in the FIFO, pulse the read_en line.
+
+** WARNING **
+When reusing this FIFO,
+be aware that isEmpty is driven low one clock cycle before d_out shows the correct data.
+If you do something like connecting 'read_en' to '~isEmpty', you'll get the wrong output.
+Maybe I'll fix this in the futre, maybe I won't.
+
 */
-module FIFO(		input				sys_clock,
+module FIFO(	input				sys_clock,
 					input 				reset,
 					input 				write_en,	//performs one r/w action per posedge when pulse_mode is high.
-					input				pulse_mode,	//enable this to queue data at the same address until write_en is pulled low.
-													//when this bit is low, the write address will change every clock cycle.
+					input					pulse_mode,	//enable this to queue data at the same address until write_en is pulled low.
+															//when this bit is low, the write address will change every clock cycle while write_en is high.
 					input 		[7:0]	di,
 					input 				read_en,	//data read is available on d_out once this goes high.
 					output 				isEmpty,
 					output 				isFull,
-					output reg	[7:0]	d_out);
+					output		[7:0]	d_out);
 
 	reg [3:0] read_addr, read_addr_next;
 	reg [3:0] write_addr, write_addr_next;
 	
-	wire [7:0] d_out_next;
-	
-	RAM #(.DATA_WIDTH(8), .ADDR_WIDTH(4)) FullDuplexRAM(sys_clock, ~reset, write_en, write_addr, di, read_addr, d_out_next);
+	RAM #(.DATA_WIDTH(8), .ADDR_WIDTH(4)) FullDuplexRAM(sys_clock, ~reset, write_en, write_addr, di, read_addr, d_out);
 	
 	localparam IDLE = 0;
 	reg state, state_next;
@@ -27,7 +32,6 @@ module FIFO(		input				sys_clock,
 	always @(posedge sys_clock) begin
 		read_addr <= reset ? 4'd0 : read_addr_next;
 		write_addr <= reset ? 4'd0 : write_addr_next;
-		d_out <= reset ? 8'd0 : read_en ? d_out_next : d_out;	//d_out line holds last read value until next read request
 	end
 	
 	//---------------------writing-------------------------------
@@ -39,9 +43,19 @@ module FIFO(		input				sys_clock,
 	
 	always @(*) begin
 		write_addr_next = write_addr;
-		if((~pulse_mode & write_en) | (negedge_write_en & ~isFull)) begin
-			write_addr_next = write_addr + 4'd1;
+		
+		if(~isFull) begin
+			if(pulse_mode) begin
+				write_addr_next = negedge_write_en ? write_addr + 4'd1 : write_addr;
+			end
+			else begin
+				write_addr_next = write_en ? write_addr + 4'd1 : write_addr;
+			end
 		end
+		
+		/*if((~isFull) & ((~pulse_mode & write_en) | (pulse_mode & negedge_write_en))) begin
+			write_addr_next = write_addr + 4'd1;
+		end*/
 	end
 	
 	
