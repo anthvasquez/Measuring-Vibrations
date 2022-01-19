@@ -56,12 +56,13 @@ module UARTDriver(	input sys_clock,
 			end
 			FRAME_END:		state_next = FRAME_START;
 			FRAME_START:	state_next = BIN_START;
-			BIN_START:		state_next = BIN_END;//DATA;
+			BIN_START:		state_next = DATA;
 			BIN_END:			state_next = IDLE;
 			DATA: begin
 			//TODO: send data to UART module when new fifo data is read and UART is not busy
 			//Note: if(!o_busy) => raise txuart write, shift byte on posedge of o_busy;
 				//TODO: implement what is described above
+				state_next = BIN_END;
 			end
 			FIFO_FULL: begin
 				fifo_write_en_next = 1'b0;
