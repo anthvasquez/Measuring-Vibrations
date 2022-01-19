@@ -28,9 +28,6 @@ module MeasuringVibrations(
 	wire [21:0] UART_data;
 	assign UART_data = FFT_data[21:11]*FFT_data[21:11] + FFT_data[10:0]*FFT_data[10:0];
 	
-	wire o_uart_tx;
-	wire o_busy;	
-	
 	//track posedge of accelerometer data sync signal
 	//used to send only one sample to FFT per data read
 	reg old_accel_osync;

@@ -78,7 +78,7 @@ module UARTDriver(	input sys_clock,
 	////////////READING///////////
 	
 	wire [30:0] i_setup;
-	assign i_setup = 31'h40_00_00_68;
+	assign i_setup = 31'h40_00_00_68;	//115200 baud
 	
 	wire [7:0]	fifo_data_read;
 	wire		fifo_read_en, fifo_isEmpty;
