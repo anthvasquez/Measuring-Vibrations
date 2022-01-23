@@ -43,7 +43,7 @@ QTGUI::QTGUI()
 	UARTOutput->setText("Text");
 
 	topLevelGrid->addWidget(chartView, 0, 0, 3, -1, 0);
-	topLevelGrid->addWidget(UARTOutput, 3, 0, 1, -1, Qt::AlignTop);
+	topLevelGrid->addWidget(UARTOutput, 3, 0, 1, -1, Qt::AlignBottom);
 	setLayout(topLevelGrid);
 	setWindowTitle("Measuring Vibrations");
 }

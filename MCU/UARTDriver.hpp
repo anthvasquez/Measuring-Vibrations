@@ -15,7 +15,12 @@
 
 #include <string>
 
-//#include <wiringSerial.h>
+#ifdef __linux__
+    #include <wiringSerial.h>
+#endif
+#ifdef __APPLE__
+    #include "FPGAVibrations.cpp"
+#endif
 
 class UARTDriver {
 	private:

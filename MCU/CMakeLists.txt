@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 project(MeasuringVibrations CXX)
 
 # additional non-gui modules
-set(LIB_SOURCE UARTDriver.hpp UARTDriver.cpp)
+set(LIB_SOURCE UARTDriver.hpp UARTDriver.cpp FPGAVibrations.cpp)
 
 # add source for any additional gui modules here
 set(UI_SOURCE QTGUI.hpp QTGUI.cpp)
 
-# add source for simmips program here
+# add source for program here
 set(MV_SOURCE MeasuringVibrations.cpp)
 
 # You should not need to edit below this line
