@@ -1,15 +1,15 @@
 module MeasuringVibrations(
-	input 		        sys_clock,
+	input 		      sys_clock,
 	input 		     	KEY,
 	
 	output				MOSI,
-	input				MISO,
+	input					MISO,
 	output				SCL,
 	output				CS,
-	input				INT1,
-	input				INT2,
+	input					INT1,
+	input					INT2,
 	
-	input				UART_RX,
+	input					UART_RX,
 	output				UART_TX,
 	
 	output	[7:0]		LEDR
@@ -19,7 +19,7 @@ module MeasuringVibrations(
 	assign reset = ~KEY;
 	
 	wire accel_osync;
-	wire signed [7:0] accel_data;
+	wire signed [7:0] accel_value;
 	
 	wire FFT_osync;
 	wire [21:0] FFT_data;
@@ -27,9 +27,6 @@ module MeasuringVibrations(
 	
 	wire [21:0] UART_data;
 	assign UART_data = FFT_data[21:11]*FFT_data[21:11] + FFT_data[10:0]*FFT_data[10:0];
-	
-	wire o_uart_tx;
-	wire o_busy;	
 	
 	//track posedge of accelerometer data sync signal
 	//used to send only one sample to FFT per data read
@@ -39,10 +36,10 @@ module MeasuringVibrations(
 	assign posedge_accel_osync = (accel_osync ^ old_accel_osync) & accel_osync;
 	
 							
-	AccelDriver ADriver(sys_clock, reset, 1'b1, MOSI, MISO, SCL, CS, accel_osync, accel_data);
-	LED_Debug	LED(sys_clock, reset, accel_osync, accel_data, LEDR);
+	AccelDriver ADriver(sys_clock, reset, 1'b1, MOSI, MISO, SCL, CS, accel_osync, accel_value);
+	LED_Debug	LED(sys_clock, reset, accel_osync, accel_value, LEDR);
 	
-	fftmain FFT(sys_clock, reset, posedge_accel_osync, {accel_data, 8'd0}, FFT_data, FFT_osync);
+	fftmain FFT(sys_clock, reset, posedge_accel_osync, {accel_value, 8'd0}, FFT_data, FFT_osync);
 	
 	//Trigger write any time a new sample is given&taken from the FFT
 	UARTDriver UDriver(	.sys_clock(sys_clock),

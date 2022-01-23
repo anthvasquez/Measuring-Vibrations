@@ -3,37 +3,39 @@ module tb_MeasuringVibrations();
 	
 	reg 		          		sys_clock;
 	wire							MOSI;
-	reg							MISO;
+	wire							MISO;
 	wire							SCL;
 	wire							CS;
-	wire							INT1;
-	wire							INT2;
+	reg							INT1;
+	reg							INT2;
+	reg							UART_RX;
+	wire							UART_TX;
 	reg 		     				KEY;
 	wire		     [7:0]		LEDR;
 	
 	wire reset;
 	assign reset = ~KEY;
 	
-	wire accel_osync;
-	wire signed [7:0] accel_data;
-	
-	AccelDriver Driver(sys_clock, reset, 1'b1, MOSI, MISO, SCL, CS, accel_osync, accel_data);
-	LED_Debug	LED(sys_clock, reset, accel_osync, accel_data, LEDR);
-	
+	MeasuringVibrations DUT1(	sys_clock, KEY,
+										MOSI, MISO, SCL, CS,
+										INT1, INT2,
+										UART_RX, UART_TX,
+										LEDR);
+	SimpleSPISlave Accel(SCL, MOSI, MISO, CS);
 	
 	initial begin
 		KEY = 1'b0;	//high
-		#30;
+		#300;
 		KEY = 1'b1;
 	end
 	
-	initial MISO = 1'b0;
+	initial sys_clock = 1'b0;
+	initial INT1 = 1'b0;
+	initial INT2 = 1'b0;
+	initial UART_RX = 1'b1;
 	
 	always begin
-		sys_clock = 1'b0;
-		#5;
-		sys_clock = 1'b1;
-		#5;
+		#41 sys_clock = ~sys_clock;
 	end
 	
 endmodule 

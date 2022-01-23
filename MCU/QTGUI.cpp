@@ -5,7 +5,7 @@
 
 QTGUI::QTGUI()
 {
-	QGridLayout *topLevelContainer = new QGridLayout();
+	QGridLayout *topLevelGrid = new QGridLayout();
 
 	QBarSet* bin0 = new QBarSet("Bin0");
 	*bin0 << 10;
@@ -30,6 +30,9 @@ QTGUI::QTGUI()
 	chart->addAxis(axisY, Qt::AlignLeft);
 	xAxis->attachAxis(axisY);
 
+	chart->legend()->setVisible(true);
+	chart->legend()->setAlignment(Qt::AlignBottom);
+
 	QChartView* chartView = new QChartView(chart);
 	chartView->setRenderHint(QPainter::Antialiasing);
 
@@ -39,10 +42,9 @@ QTGUI::QTGUI()
 	UARTOutput->setTextInteractionFlags(Qt::NoTextInteraction);
 	UARTOutput->setText("Text");
 
-
-	topLevelContainer->addWidget(chartView, 0, 0, 1, 1);
-	topLevelContainer->addWidget(UARTOutput, 1, 0, 1, 1);
-	setLayout(topLevelContainer);
+	topLevelGrid->addWidget(chartView, 0, 0, 3, -1, 0);
+	topLevelGrid->addWidget(UARTOutput, 3, 0, 1, -1, Qt::AlignTop);
+	setLayout(topLevelGrid);
 	setWindowTitle("Measuring Vibrations");
 }
 

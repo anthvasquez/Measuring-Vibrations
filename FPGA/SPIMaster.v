@@ -18,14 +18,14 @@ module SPIMaster(		input clk,
 		localparam IDLE = 3'd0, TX = 3'd1, READ = 3'd2, WRITE = 3'd3, FINISHED = 3'd4;
 		reg [2:0] state, nextState;
 		
-		wire [1:0] rw_ms;
+		wire [1:0] Rw_Ms;
 		wire spiclk;
 		reg [5:0] count, countNext;
 		reg [4:0] tCount, tCountNext;	//count the number of bit transfers
 		assign spiclk = !count[1];	//3MHz!
 		assign SCLK = spiclk;
 		assign CS = state == IDLE || state == FINISHED;
-		assign rw_ms = rw ? 2'b11 : 2'b00;
+		assign Rw_Ms = rw ? 2'b11 : 2'b00;
 		
 		//SPIRegWrite SPIW(clk, reset, we, address, value, tCount, negedgeSignal, writeComplete, MOSIW, SCLK);
 		//SPIRegRead SPIR(clk, reset, re, address, buffer, tCount, negedgeSignal, dataReady, MOSIR, MISO, SCLK);
@@ -87,7 +87,7 @@ module SPIMaster(		input clk,
 		end
 		
 		always @(*) begin
-			dataNext =	tCount == 5'd0	?	{rw_ms, address, value} : 
+			dataNext =	tCount == 5'd0	?	{Rw_Ms, address, value} : 
 							negedgeSCLK		?	data << 1 : 
 													data;
 		end
