@@ -1,8 +1,11 @@
 #include "UARTDriver.hpp"
+#include <iostream>
+
+
 
 UARTDriver::UARTDriver()
 {
-	serial_fd = serialOpen("/dev/serial0", 9600);
+	serial_fd = open("poopfile.txt", O_RDWR);//serialOpen("/dev/serial0", 9600);
 	//int serialFd = open("/dev/serial0", O_RDWR);
 	if(serial_fd == -1)
 	{
@@ -10,11 +13,13 @@ UARTDriver::UARTDriver()
 	}
 
 	//spawn read thread using pthread_create
+	//std::thread readLoop = std::thread(&UARTDriver::foobar, this);
 }
 
 UARTDriver::~UARTDriver()
 {
-	serialClose(serial_fd);
+	//serialClose(serial_fd);
+	close(serial_fd);
 }
 
 void UARTDriver::UARTCallback(char** data)

@@ -23,7 +23,12 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -lwiringPi")
+if(UNIX AND NOT APPLE AND CMAKE_COMPILER_IS_GNUCXX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -lwiringPi")
+endif()
+if(NOT UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+endif()
 
 # configure Qt
 set(CMAKE_AUTOMOC ON)
@@ -37,7 +42,4 @@ if(UNIX AND STRICT)
 endif()
 
 add_executable(measuring_vibrations ${MV_SOURCE} ${UI_SOURCE} ${LIB_SOURCE})
-if(UNIX AND NOT APPLE AND CMAKE_COMPILER_IS_GNUCXX)
-	target_link_libraries(measuring_vibrations Qt5::Core Qt5::Charts Qt5::Widgets pthread)
-endif()
-
+target_link_libraries(measuring_vibrations Qt5::Core Qt5::Charts Qt5::Widgets pthread)

@@ -37,10 +37,10 @@ QTGUI::QTGUI()
 	UARTOutput->setReadOnly(true);
 	UARTOutput->setDocumentTitle("UART Output");
 	UARTOutput->setTextInteractionFlags(Qt::NoTextInteraction);
-	UARTOutput->setText("A ha ha");
+	UARTOutput->setText("Text");
 
 
-	topLevelContainer->addWidget(chartView, 0, 0, 3, 1);
+	topLevelContainer->addWidget(chartView, 0, 0, 1, 1);
 	topLevelContainer->addWidget(UARTOutput, 1, 0, 1, 1);
 	setLayout(topLevelContainer);
 	setWindowTitle("Measuring Vibrations");

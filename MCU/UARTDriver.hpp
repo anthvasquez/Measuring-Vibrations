@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <thread>
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -14,7 +15,7 @@
 
 #include <string>
 
-#include <wiringSerial.h>
+//#include <wiringSerial.h>
 
 class UARTDriver {
 	private:
