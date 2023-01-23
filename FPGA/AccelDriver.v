@@ -11,7 +11,7 @@ module AccelDriver(
 							
 							output	MOSI,
 							input		MISO,
-							output	SCL,
+							output	SCK,
 							output	CS,
 							
 							output	o_sync,
@@ -69,7 +69,7 @@ module AccelDriver(
 	
 	
 	//Modules
-	SPIMaster SPIM(sys_clock, reset, driver_enable & enable, rw, address, wData, o_buffer, o_sync, MOSI, MISO, SCL, CS);
+	SPIMaster SPIM(sys_clock, reset, driver_enable & enable, rw, address, wData, o_buffer, o_sync, MOSI, MISO, SCK, CS);
 	
 	
 	// ---- heartbeat ----
